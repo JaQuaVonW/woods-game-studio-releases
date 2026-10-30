@@ -1,0 +1,31 @@
+# Signs and publishes one release. The job runs in the "release" environment, which requires a
+# reviewer's approval: the signing key doesn't exist here until that approval is given, and only
+# this job on the main branch can have it. Started by packaging/propose_release.py in the private
+# source repository, after a draft release has been uploaded.
+name: publish
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to publish, e.g. 0.3.2
+        required: true
+permissions:
+  contents: read
+concurrency: publish
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: release
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Sign and publish
+        env:
+          VERSION: ${{ inputs.version }}
+          WGS_SIGNING_KEY: ${{ secrets.WGS_SIGNING_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          FEED_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
+        run: python3 tools/publish.py
