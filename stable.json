@@ -1,0 +1,14 @@
+{
+ "channel": "stable",
+ "format": "wgs-release/1",
+ "notes": "- First release from the public update feed: this version finds and offers new versions by itself.\n- Update downloads retry on their own and continue where a dropped connection stopped.\n- A copy left open keeps checking for new versions.\n- Downloads use Windows' own certificate checks, so a brand-new machine can reach the feed.\n",
+ "package": {
+  "name": "WoodsGameStudio-0.3.3-win64.zip",
+  "sha256": "cb273685a1f34e1e60c4084fe53aedf8895af69a7ba62292c6132cb18be92c5a",
+  "size": 122803083,
+  "url": "https://github.com/JaQuaVonW/woods-game-studio-releases/releases/download/v0.3.3/WoodsGameStudio-0.3.3-win64.zip"
+ },
+ "product": "woods-game-studio",
+ "published": "2026-10-30T18:09:32+00:00",
+ "version": "0.3.3"
+}
