@@ -53,7 +53,7 @@ Say "latest $latest; starting from $start"
 
 # --------------------------------------------------------- Claude Code, the way a user has it
 Say 'installing Claude Code'
-npm install -g @anthropic-ai/claude-code 2>&1 | Select-Object -Last 2
+try { npm install -g @anthropic-ai/claude-code 2>&1 | Select-Object -Last 2 | ForEach-Object { Write-Host "   $_" } } catch { Write-Host "   npm: $_" }
 
 # ---------------------------------------------------------------------------------- installer
 $setup = Join-Path $env:RUNNER_TEMP "WoodsGameStudioSetup-$start.exe"
@@ -73,7 +73,7 @@ Say 'junction, shortcuts and uninstall entry are in place'
 $claude = Join-Path $env:USERPROFILE '.claude.json'
 if (-not (Test-Path $claude) -or -not ((Get-Content $claude -Raw | ConvertFrom-Json).mcpServers.'woods-game-studio')) { Fail 'the installer did not register the MCP server with Claude Code' }
 Say 'Claude Code has woods-game-studio registered:'
-claude mcp list 2>&1 | Select-String 'woods' | ForEach-Object { Write-Host "   $($_.Line)" }
+try { claude mcp list 2>&1 | Select-String 'woods' | ForEach-Object { Write-Host "   $($_.Line)" } } catch { Write-Host "   claude mcp list: $_" }
 
 # ---------------------------------------------------------------------- MCP, as Claude Code does
 function Test-Mcp {
@@ -90,7 +90,7 @@ function Test-Mcp {
         $p.StandardInput.Flush()
         $line = $p.StandardOutput.ReadLineAsync()
         if (-not $line.Wait(60000)) { Fail "no MCP answer to $method" }
-        $line.Result | ConvertFrom-Json -Depth 30
+        $line.Result | ConvertFrom-Json -Depth 40 -AsHashtable
     }
     $init = & $rpc 1 'initialize' @{ protocolVersion = '2025-06-18'; capabilities = @{}; clientInfo = @{ name = 'clean-install-test'; version = '1' } }
     $p.StandardInput.WriteLine('{"jsonrpc":"2.0","method":"notifications/initialized"}'); $p.StandardInput.Flush()

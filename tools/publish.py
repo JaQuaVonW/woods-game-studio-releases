@@ -132,6 +132,7 @@ def main():
     if inner.get('version') != version or inner.get('product') != PRODUCT:
         fail('the package says it is a different version')
 
+    run('gh', 'auth', 'setup-git')
     run('git', 'fetch', '--depth=1', 'origin', 'gh-pages')
     pages = os.path.join(work, 'pages')
     run('git', 'worktree', 'add', '--detach', pages, 'FETCH_HEAD')
